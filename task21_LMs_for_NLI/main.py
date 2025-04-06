@@ -1,8 +1,8 @@
 import json
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-#from transformers import T5Tokenizer, T5ForConditionalGeneration
 import torch
 from pathlib import Path
+
 # Load the dataset
 def load_dataset(file_path):
     with open(file_path, 'r') as f:
@@ -11,6 +11,10 @@ def load_dataset(file_path):
 # Map model outputs to labels
 def get_label(predictions, label_map):
     return label_map[predictions.argmax(dim=1).item()]
+
+def compute_accuracy(predictions, gold_labels):
+    correct = sum(p == g for p, g in zip(predictions, gold_labels))
+    return correct / len(gold_labels)
 
 def main():
     # Paths
@@ -31,27 +35,34 @@ def main():
     # Move model to GPU if available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
+
     # Label mapping
     label_map = {0: "contradiction", 1: "neutral", 2: "entailment"}
 
     # Evaluate on the dataset
-    for data in mismatched_data[:5]:  # Example: process first 5 rows
+    predictions = []
+    gold_labels = []
+
+    for data in mismatched_data:  # Process the entire dataset
         sentence1 = data["sentence1"]
         sentence2 = data["sentence2"]
 
-        # Tokenize inputs
+        # Tokenize inputs and move them to the same device as the model
         inputs = tokenizer(sentence1, sentence2, return_tensors="pt", truncation=True, padding=True).to(device)
 
         # Run inference
         with torch.no_grad():
             outputs = model(**inputs)
-            predictions = torch.nn.functional.softmax(outputs.logits, dim=1)
+            probs = torch.nn.functional.softmax(outputs.logits, dim=1)
 
         # Get predicted label
-        predicted_label = get_label(predictions, label_map)
-        print(f"Sentence1: {sentence1}")
-        print(f"Sentence2: {sentence2}")
-        print(f"Gold Label: {data['gold_label']}, Predicted Label: {predicted_label}\n")
+        predicted_label = get_label(probs, label_map)
+        predictions.append(predicted_label)
+        gold_labels.append(data["gold_label"])
+
+    # Compute accuracy
+    accuracy = compute_accuracy(predictions, gold_labels)
+    print(f"Accuracy: {accuracy * 100:.2f}%")
 
 if __name__ == "__main__":
     main()
