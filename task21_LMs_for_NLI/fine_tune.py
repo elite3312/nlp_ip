@@ -66,11 +66,12 @@ def main():
         per_device_eval_batch_size=8,
         num_train_epochs=3,
         weight_decay=0.01,
-        save_strategy="epoch",
+        save_strategy="epoch",           # Save the model at the end of each epoch
+        eval_strategy="epoch",     # Evaluate the model at the end of each epoch
         logging_dir="./logs",
         logging_steps=10,
         save_total_limit=2,
-        load_best_model_at_end=True,
+        load_best_model_at_end=True,     # Load the best model at the end of training
         push_to_hub=False
     )
 
@@ -83,7 +84,6 @@ def main():
         tokenizer=tokenizer
     )
 
-    # Train the model
     # Train the model
     trainer.train()
 
