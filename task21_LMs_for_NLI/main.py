@@ -2,7 +2,7 @@ import json
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 from pathlib import Path
-
+import re
 # Load the dataset
 def load_dataset(file_path):
     with open(file_path, 'r') as f:
@@ -26,7 +26,26 @@ def construct_prompt(sentence1, sentence2):
         f"Label:?"
     )
     return task_description + example
+def map_to_label_exact(completion, label_map):
+    # Exact Matching:
+    completion_lower = completion.lower()
+    for label in label_map.values():
+        if label in completion_lower:
+            return label
+    return "unknown"  # Default if no label is found
+def map_to_label_confidence_score(completion, label_map):
+    # Exact Matching with Confidence Scoring:
+    completion_lower = completion.lower()
+    scores = {label: completion_lower.count(label) for label in label_map.values()}
+    return max(scores, key=scores.get)  # Return the label with the highest score
 
+
+def map_to_label_re(completion, label_map):
+    # Use regular expressions to match labels more robustly, accounting for variations in capitalization, punctuation, or phrasing.
+    for label in label_map.values():
+        if re.search(rf'\b{label}\b', completion, re.IGNORECASE):
+            return label
+    return "unknown"  # Default if no label is found
 def main():
     # Paths
     dataset_path = "./task21_LMs_for_NLI/datasets/MultiNLI_small"
@@ -53,7 +72,8 @@ def main():
     predictions = []
     gold_labels = []
 
-    for data in matched_data+mismatched_data:  # Process the entire dataset
+    test_data = mismatched_data + matched_data  # Combine both datasets for evaluation
+    for data in test_data[:]:  # Process the entire dataset
         sentence1 = data["sentence1"]
         sentence2 = data["sentence2"]
         gold_label = data["gold_label"]
@@ -66,15 +86,11 @@ def main():
 
         # Generate completion
         with torch.no_grad():
-            outputs = model.generate(**inputs, max_length=50)
+            outputs = model.generate(**inputs, max_length=100)
             completion = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
         # Map the completion to one of the labels
-        predicted_label = None
-        for label in label_map.values():
-            if label in completion.lower():
-                predicted_label = label
-                break
+        predicted_label = map_to_label_confidence_score(completion, label_map)
 
         # Append predictions and gold labels
         predictions.append(predicted_label)
