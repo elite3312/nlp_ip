@@ -37,14 +37,12 @@ def preprocess_data(data, tokenizer, max_length=128):
 
 def main():
     # Paths
-    dataset_path = "./task21_LMs_for_NLI/_datasets/MultiNLI_small"
-    mismatched_file = Path(dataset_path) / "dev_mismatched_sampled-1.jsonl"
-    matched_file = Path(dataset_path) / "dev_matched_sampled-1.jsonl"
+    dataset_path = "./task21_LMs_for_NLI/_datasets/MultiNLI"
+    train_file = Path(dataset_path) / "multinli_1.0_train.jsonl"
 
     # Load dataset
-    mismatched_data = load_dataset(mismatched_file)
-    matched_data = load_dataset(matched_file)
-    full_data = mismatched_data + matched_data
+    train_data = load_dataset(train_file)
+    full_data = train_data
 
     # Split dataset into training and testing (50/50 split)
     train_data, test_data = train_test_split(full_data, test_size=0.5, random_state=42)

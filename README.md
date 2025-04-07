@@ -18,7 +18,7 @@ pip install datasets
 - only inference
 
   ```txt
-  (.conda) (base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$ /home/perry/nlp2025/nlp_ip/.conda/bin/python /home/perry/nlp2025/nlp_ip/task21_LMs_for_NLI/main.py
+  (.conda) (base) perry@DESKTOP-LGGEMNE:python task21_LMs_for_NLI/only_inference.py --model_name google/flan-t5-base
   Accuracy: 58.42%
   ```
 

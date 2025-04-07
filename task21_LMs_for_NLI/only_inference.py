@@ -1,8 +1,10 @@
+import argparse  # Import argparse for command-line arguments
 import json
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 from pathlib import Path
 import re
+
 # Load the dataset
 def load_dataset(file_path):
     with open(file_path, 'r') as f:
@@ -26,6 +28,7 @@ def construct_prompt(sentence1, sentence2):
         f"Label:?"
     )
     return task_description + example
+
 def map_to_label_exact(completion, label_map):
     # Exact Matching:
     completion_lower = completion.lower()
@@ -33,12 +36,12 @@ def map_to_label_exact(completion, label_map):
         if label in completion_lower:
             return label
     return "unknown"  # Default if no label is found
+
 def map_to_label_confidence_score(completion, label_map):
     # Exact Matching with Confidence Scoring:
     completion_lower = completion.lower()
     scores = {label: completion_lower.count(label) for label in label_map.values()}
     return max(scores, key=scores.get)  # Return the label with the highest score
-
 
 def map_to_label_re(completion, label_map):
     # Use regular expressions to match labels more robustly, accounting for variations in capitalization, punctuation, or phrasing.
@@ -46,7 +49,13 @@ def map_to_label_re(completion, label_map):
         if re.search(rf'\b{label}\b', completion, re.IGNORECASE):
             return label
     return "unknown"  # Default if no label is found
+
 def main():
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Run inference using a pre-trained language model.")
+    parser.add_argument("--model_name", type=str, required=True, help="Path to the pre-trained model or model name from Hugging Face.")
+    args = parser.parse_args()
+
     # Paths
     dataset_path = "./task21_LMs_for_NLI/_datasets/MultiNLI_small"
     mismatched_file = Path(dataset_path) / "dev_mismatched_sampled-1.jsonl"
@@ -57,7 +66,7 @@ def main():
     matched_data = load_dataset(matched_file)
 
     # Load pre-trained model and tokenizer
-    model_name = "google/flan-t5-base"
+    model_name = args.model_name #"google/flan-t5-base"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name, device_map="auto", torch_dtype=torch.float16)
 
@@ -72,7 +81,7 @@ def main():
     predictions = []
     gold_labels = []
 
-    test_data = mismatched_data + matched_data  # Combine both datasets for evaluation
+    test_data = mismatched_data# + matched_data  # Combine both datasets for evaluation
     for data in test_data[:100]:  # Process the entire dataset
         sentence1 = data["sentence1"]
         sentence2 = data["sentence2"]
