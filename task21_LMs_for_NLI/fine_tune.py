@@ -1,4 +1,5 @@
 import json
+import random
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, Trainer, TrainingArguments
 from sklearn.model_selection import train_test_split
 from datasets import Dataset
@@ -44,8 +45,12 @@ def main():
     train_data = load_dataset(train_file)
     full_data = train_data
 
+    # Sample 10% of the dataset
+    sample_size = int(0.1 * len(full_data))
+    sampled_data = random.sample(full_data, sample_size)
+
     # Split dataset into training and testing (50/50 split)
-    train_data, test_data = train_test_split(full_data, test_size=0.5, random_state=42)
+    train_data, test_data = train_test_split(sampled_data, test_size=0.5, random_state=42)
 
     # Load pre-trained model and tokenizer
     model_name = "google/flan-t5-base"

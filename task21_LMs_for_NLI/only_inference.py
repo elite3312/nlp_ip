@@ -81,8 +81,8 @@ def main():
     predictions = []
     gold_labels = []
 
-    test_data = mismatched_data# + matched_data  # Combine both datasets for evaluation
-    for data in test_data[:100]:  # Process the entire dataset
+    test_data = mismatched_data + matched_data  # Combine both datasets for evaluation
+    for data in test_data[:]:  # Process the entire dataset
         sentence1 = data["sentence1"]
         sentence2 = data["sentence2"]
         gold_label = data["gold_label"]
