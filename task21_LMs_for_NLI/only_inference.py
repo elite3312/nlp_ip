@@ -48,7 +48,7 @@ def map_to_label_re(completion, label_map):
     return "unknown"  # Default if no label is found
 def main():
     # Paths
-    dataset_path = "./task21_LMs_for_NLI/datasets/MultiNLI_small"
+    dataset_path = "./task21_LMs_for_NLI/_datasets/MultiNLI_small"
     mismatched_file = Path(dataset_path) / "dev_mismatched_sampled-1.jsonl"
     matched_file = Path(dataset_path) / "dev_matched_sampled-1.jsonl"
 
@@ -73,7 +73,7 @@ def main():
     gold_labels = []
 
     test_data = mismatched_data + matched_data  # Combine both datasets for evaluation
-    for data in test_data[:]:  # Process the entire dataset
+    for data in test_data[:100]:  # Process the entire dataset
         sentence1 = data["sentence1"]
         sentence2 = data["sentence2"]
         gold_label = data["gold_label"]
