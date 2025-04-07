@@ -46,8 +46,9 @@ def main():
     full_data = train_data
 
     # Sample 10% of the dataset
-    sample_size = int(0.1 * len(full_data))
-    sampled_data = random.sample(full_data, sample_size)
+    #sample_size = int(0.1 * len(full_data))
+    #sampled_data = random.sample(full_data, sample_size)
+    sampled_data=full_data
 
     # Split dataset into training and testing (50/50 split)
     train_data, test_data = train_test_split(sampled_data, test_size=0.5, random_state=42)

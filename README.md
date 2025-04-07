@@ -17,11 +17,17 @@ pip install datasets
 
 - only inference
 
-  ```txt
+  ```sh
   (.conda) (base) perry@DESKTOP-LGGEMNE:python task21_LMs_for_NLI/only_inference.py --model_name google/flan-t5-base
   Accuracy: 58.42%
   ```
-
+- fine tuned on 5000 entries from Multinli
+   
+   ```sh
+   (.conda) (base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$ python task21_LMs_for_NLI/finetune.py # finetune and save to fine_tuned_model
+   (.conda) (base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$ python task21_LMs_for_NLI/only_inference.py --model_name fine_tuned_model
+   Accuracy: 80.92%
+   ```
 ## useful commands
 
 ```sh
