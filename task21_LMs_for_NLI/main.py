@@ -43,7 +43,7 @@ def main():
     predictions = []
     gold_labels = []
 
-    for data in mismatched_data:  # Process the entire dataset
+    for data in matched_data:  # Process the entire dataset
         sentence1 = data["sentence1"]
         sentence2 = data["sentence2"]
 
