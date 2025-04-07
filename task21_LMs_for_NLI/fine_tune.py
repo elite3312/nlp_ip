@@ -38,8 +38,8 @@ def preprocess_data(data, tokenizer, max_length=128):
 
 def main():
     # Paths
-    dataset_path = "./task21_LMs_for_NLI/_datasets/MultiNLI"
-    train_file = Path(dataset_path) / "multinli_1.0_train.jsonl"
+    dataset_path = "./task21_LMs_for_NLI/_datasets/MultiNLI_sampled"
+    train_file = Path(dataset_path) / "multinli_1.0_train_sampled.jsonl"
 
     # Load dataset
     train_data = load_dataset(train_file)
