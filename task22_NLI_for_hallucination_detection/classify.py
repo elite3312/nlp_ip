@@ -16,47 +16,40 @@ def compute_metrics(predictions, gold_labels):
     f1 = f1_score(gold_labels, predictions, average="weighted", zero_division=0)
     return accuracy, precision, recall, f1
 
-def construct_prompt(premise, hypothesis):
+def construct_prompt(reference, claim):
     """
     Construct a prompt for in-context learning.
     """
     task_description = (
-        "Determine if the hypothesis sentence is a hallucination based on the premise text. "
-        "Yes means that the sentence is entirely hallucinated or consists of some non-factual information.\n"
-        "No means that the information presented in the sentence is accurate.\n"
-        "The possible labels are: 'Yes' and 'No'.\n\n"
+        "Determine if the claim is supported by the reference."
+        "The possible labels are: yes, no.\n\n"
     )
     example = (
-        f"Premise (Wiki Bio): {premise}\n"
-        f"Hypothesis (GPT-3 Sentence): {hypothesis}\n"
-        f"Label:?"
+        f"reference : {reference}\n"
+        f"claim : {claim}\n"
+        f"Label:yes or no"
     )
     return task_description + example
 
-def map_to_label_confidence_score(completion, label_map):
-    # Exact Matching with Confidence Scoring:
-    completion_lower = completion.lower()
-    scores = {label: completion_lower.count(label) for label in label_map.values()}
-    return max(scores, key=scores.get)  # Return the label with the highest score
 def map_to_label(most_common_element):
     if most_common_element == "major_inaccurate":
-        return 'Yes'
+        return 'no'
     elif most_common_element == "minor_inaccurate":
-        return 'Yes'
+        return 'no'
     elif most_common_element == "accurate":
-        return 'No'
+        return 'yes'
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Run inference using a pre-trained language model.")
     parser.add_argument("--model_name", type=str, required=True, help="Path to the pre-trained model or model name from Hugging Face.")
-    #args = parser.parse_args()
+    args = parser.parse_args()
     dataset_file = "potsawee/wiki_bio_gpt3_hallucination"
 
     # Load dataset
     dataset = load_dataset(dataset_file)
 
     # Load pre-trained model and tokenizer
-    model_name ="google/flan-t5-base"#args.model_name#
+    model_name =args.model_name#"google/flan-t5-base"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name, device_map="auto", torch_dtype=torch.float16)
 
@@ -64,8 +57,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
 
-    # Label mapping
-    label_map = {0: "Yes", 1: "No"}
+
 
     # Evaluate on the dataset
     predictions = []
@@ -94,7 +86,7 @@ def main():
         #if completion !='not hallucination':
         #    print(completion)
         # Map the completion to one of the labels
-        predicted_label = map_to_label_confidence_score(completion, label_map)
+        predicted_label = completion
 
         # Append predictions and gold labels
         predictions.append(predicted_label)
@@ -106,7 +98,7 @@ def main():
     print(f"Precision: {precision * 100:.2f}%")
     print(f"Recall: {recall * 100:.2f}%")
     print(f"F1 Score: {f1 * 100:.2f}%")
-    print("Predictions:", predictions)
-    print("Gold Labels:", gold_labels)
+    #print("Predictions:", predictions)
+    #print("Gold Labels:", Counter(gold_labels))
 if __name__ == "__main__":
     main()

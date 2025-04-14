@@ -31,14 +31,24 @@ pip install datasets
 
 ## task 2.2 NLI for hallucination detection
 
-- this a wrong output because the model actually predicted true for everything
+- loading the model without finetuning
 
 ```sh
-(.conda) (base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$ /home/perry/nlp2025/nlp_ip/.conda/bin/python /home/perry/nlp2025/nlp_ip/task22_NLI_for_hallucination_detection/classify.py --model_name google/flan-t5-base
+(base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$  cd /home/perry/nlp2025/nlp_ip ; /usr/bin/env /home/perry/nlp2025/nlp_ip/.conda/bin/python /home/perry/.vscode-server/extensions/ms-python.debugpy-2025.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 39791 -- /home/perry/nlp2025/nlp_ip/task22_NLI_for_hallucination_detection/classify.py --model google/flan-t5-base 
+Accuracy: 52.10%
+Precision: 68.35%
+Recall: 52.10%
+F1 Score: 53.50%
+```
+
+- loading the finetuned model
+
+```sh
+(base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$  cd /home/perry/nlp2025/nlp_ip ; /usr/bin/env /home/perry/nlp2025/nlp_ip/.conda/bin/python /home/perry/.vscode-server/extensions/ms-python.debugpy-2025.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 60487 -- /home/perry/nlp2025/nlp_ip/task22_NLI_for_hallucination_detection/classify.py --model fine_tuned_model 
 Accuracy: 71.43%
-Precision: 51.02%
+Precision: 71.43%
 Recall: 71.43%
-F1 Score: 59.52%
+F1 Score: 71.43%
 ```
 
 
