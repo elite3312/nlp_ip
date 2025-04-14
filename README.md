@@ -28,6 +28,21 @@ pip install datasets
    (.conda) (base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$ python task21_LMs_for_NLI/only_inference.py --model_name fine_tuned_model
    Accuracy: 80.92%
    ```
+
+## task 2.2 NLI for hallucination detection
+
+- this a wrong output because the model actually predicted true for everything
+
+```sh
+(.conda) (base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$ /home/perry/nlp2025/nlp_ip/.conda/bin/python /home/perry/nlp2025/nlp_ip/task22_NLI_for_hallucination_detection/classify.py --model_name google/flan-t5-base
+Accuracy: 71.43%
+Precision: 51.02%
+Recall: 71.43%
+F1 Score: 59.52%
+```
+
+
+
 ## useful commands
 
 ```sh
