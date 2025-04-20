@@ -172,6 +172,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-fine_tuned_model
+fine_tuned_model*
 task21_LMs_for_NLI/_datasets/MultiNLI
 wandb

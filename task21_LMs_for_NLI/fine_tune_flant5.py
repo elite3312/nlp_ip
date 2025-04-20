@@ -64,7 +64,7 @@ def main():
 
     # Define training arguments
     training_args = TrainingArguments(
-        output_dir="./fine_tuned_model",  # Directory to save the model
+        output_dir="./fine_tuned_model_"+model_name.split('/')[-1],  # Directory to save the model
         learning_rate=5e-5,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=8,
@@ -96,8 +96,8 @@ def main():
     print(f"Evaluation results: {eval_results}")
 
     # Save the fine-tuned model
-    model.save_pretrained("./fine_tuned_model")
-    tokenizer.save_pretrained("./fine_tuned_model")
+    model.save_pretrained("./fine_tuned_model_"+model_name.split('/')[-1])
+    tokenizer.save_pretrained("./fine_tuned_model_"+model_name.split('/')[-1])
 
 if __name__ == "__main__":
     main()

@@ -54,6 +54,8 @@ def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Run inference using a pre-trained language model.")
     parser.add_argument("--model_name", type=str, required=True, help="Path to the pre-trained model or model name from Hugging Face.")
+    parser.add_argument("--data", type=str, required=True, help="matched or mismatched")
+    
     args = parser.parse_args()
 
     # Paths
@@ -81,7 +83,11 @@ def main():
     predictions = []
     gold_labels = []
 
-    test_data = mismatched_data + matched_data  # Combine both datasets for evaluation
+    if args.data == "mismatched":
+        test_data = mismatched_data
+    elif args.data == "matched":
+        test_data = matched_data
+    i=0
     for data in test_data[:]:  # Process the entire dataset
         sentence1 = data["sentence1"]
         sentence2 = data["sentence2"]
@@ -97,14 +103,18 @@ def main():
         with torch.no_grad():
             outputs = model.generate(**inputs, max_length=100)
             completion = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
+            if i<10:
+                print(f"Prompt: {prompt}")
+                print(f"Completion: {completion}")
+                print(f"Gold Label: {gold_label}")
+                print("-" * 50)
         # Map the completion to one of the labels
         predicted_label = map_to_label_confidence_score(completion, label_map)
 
         # Append predictions and gold labels
         predictions.append(predicted_label)
         gold_labels.append(gold_label)
-
+        i+=1
     # Compute accuracy
     accuracy = compute_accuracy(predictions, gold_labels)
     print(f"Accuracy: {accuracy * 100:.2f}%")
