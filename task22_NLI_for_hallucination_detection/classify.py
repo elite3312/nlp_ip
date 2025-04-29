@@ -60,19 +60,23 @@ def main():
 
 
     # Evaluate on the dataset
+    # Evaluate on the dataset
     predictions = []
     gold_labels = []
+
+    # Counter to track the number of entries printed
+    entry_count = 0
 
     for data in dataset['evaluation']:
         premise = data["wiki_bio_text"]
         hypothesis = data["gpt3_text"]
-        annotation = data["annotation"]# a list
+        annotation = data["annotation"]  # a list
 
         # Find the most common element as our gold label
         counter = Counter(annotation)
         most_common_element, frequency = counter.most_common(1)[0]
 
-        gold_label=map_to_label(most_common_element)
+        gold_label = map_to_label(most_common_element)
         # Construct the prompt
         prompt = construct_prompt(premise, hypothesis)
 
@@ -83,14 +87,21 @@ def main():
         with torch.no_grad():
             outputs = model.generate(**inputs, max_length=100)
             completion = tokenizer.decode(outputs[0], skip_special_tokens=True)
-        #if completion !='not hallucination':
-        #    print(completion)
+
         # Map the completion to one of the labels
         predicted_label = completion
 
         # Append predictions and gold labels
         predictions.append(predicted_label)
         gold_labels.append(gold_label)
+
+        # Print the first 10 entries
+        if entry_count < 10:
+            print(f"Entry {entry_count + 1}:")
+            print(f"Prediction: {predicted_label}")
+            print(f"Gold Label: {gold_label}")
+            print("-" * 50)
+            entry_count += 1
 
     # Compute metrics
     accuracy, precision, recall, f1 = compute_metrics(predictions, gold_labels)

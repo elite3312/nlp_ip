@@ -96,7 +96,7 @@ F1 Score: 53.50%
 - loading the finetuned model
 
 ```sh
-(base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$  cd /home/perry/nlp2025/nlp_ip ; /usr/bin/env /home/perry/nlp2025/nlp_ip/.conda/bin/python /home/perry/.vscode-server/extensions/ms-python.debugpy-2025.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 60487 -- /home/perry/nlp2025/nlp_ip/task22_NLI_for_hallucination_detection/classify.py --model fine_tuned_model 
+(base) perry@DESKTOP-LGGEMNE:~/nlp2025/nlp_ip$  cd /home/perry/nlp2025/nlp_ip ; /usr/bin/env /home/perry/nlp2025/nlp_ip/.conda/bin/python /home/perry/.vscode-server/extensions/ms-python.debugpy-2025.6.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 60487 -- /home/perry/nlp2025/nlp_ip/task22_NLI_for_hallucination_detection/classify.py --model fine_tuned_model_flan-t5-base
 Accuracy: 71.43%
 Precision: 71.43%
 Recall: 71.43%
