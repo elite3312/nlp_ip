@@ -11,8 +11,8 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "--model",
-                "google/flan-t5-base"
+                //"--model",
+                //"google/flan-t5-base"
                 //"fine_tuned_model"
             ],
         }
