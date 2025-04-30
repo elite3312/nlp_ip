@@ -51,7 +51,7 @@ def load_crows_pairs(num_examples=80):
     '''
     2 for gender
     '''
-    selected_examples = random.sample(gender_examples, num_examples)
+    selected_examples = gender_examples[:81]#random.sample(gender_examples, num_examples)
     pairs = [(item["sent_more"], item["sent_less"]) for item in selected_examples]
     return pairs
 
